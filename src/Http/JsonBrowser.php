@@ -22,12 +22,12 @@ class JsonBrowser
     {
         try {
             $client = new GuzzleClient();
-            $guzzRequest = $client->createRequest($r->method, $r->url);
-            $guzzRequest->setHeaders($r->headers);
-            $guzzRequest->setBody(Stream::factory($r->body));
-            $guzzResponse = $client->send($guzzRequest);
-            $response = new Response((string) $guzzResponse->getBody());
-            $response->statusCode = (string) $guzzResponse->getStatusCode();
+			$guzzRequest = $client->request($r->method, $r->url, [
+				'body' => $r->body,
+				'headers' => $r->headers
+			]);
+            $response = new Response((string) $guzzRequest->getBody());
+            $response->statusCode = (string) $guzzRequest->getStatusCode();
             $response->json = json_decode((string) $response, true);
         } catch (\Exception $e) {
             $response = new Response($e->getMessage());
